@@ -1,4 +1,4 @@
-# 🏛️ Documento de Arquitetura de Software (EducaMVP)
+# 🏛️ Documento de Arquitetura de Software (SIMA)
 
 Este documento descreve as principais decisões de design, padrões e tecnologias escolhidas para a construção do projeto. Seu objetivo é facilitar o entendimento do código-fonte para novos desenvolvedores, acadêmicos e recrutadores.
 

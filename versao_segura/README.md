@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/angularjs/angularjs-original.svg" alt="Angular Logo" width="80" height="80">
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/supabase/supabase-original.svg" alt="Supabase Logo" width="80" height="80">
 
-  <h1 align="center">EducaMVP</h1>
+  <h1 align="center">SIMA</h1>
 
   <p align="center">
     Uma Plataforma Moderna de Cursos e Gestão de Conhecimento
@@ -29,7 +29,7 @@
 
 ## 📚 Sobre o Projeto
 
-O **EducaMVP** é um projeto de Sistema de Gestão de Aprendizagem (LMS) desenvolvido para centralizar treinamentos e distribuir conhecimento de forma estruturada.
+O **SIMA** é um projeto de Sistema de Gestão de Aprendizagem (LMS) desenvolvido para centralizar treinamentos e distribuir conhecimento de forma estruturada.
 
 Foi idealizado inicialmente como uma prova de conceito (MVP) para disciplinas acadêmicas (ex: Engenharia de Produção), servindo como uma ferramenta real para padronização de treinamentos (Standardized Work), gestão de conhecimento corporativo ou acadêmico e melhoria contínua através do feedback de usuários.
 
@@ -99,7 +99,7 @@ A aplicação abrirá no seu navegador padrão em: `http://localhost:3000`
 
 ## 📚 About the Project
 
-**EducaMVP** is a Learning Management System (LMS) designed to centralize training and distribute knowledge in a structured way.
+**SIMA** is a Learning Management System (LMS) designed to centralize training and distribute knowledge in a structured way.
 
 Initially idealized as a Proof of Concept (MVP) for academic disciplines (e.g., Production Engineering), it serves as a real tool for training standardization (Standardized Work), corporate or academic knowledge management, and continuous improvement through user feedback.
 

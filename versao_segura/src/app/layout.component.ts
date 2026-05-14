@@ -47,7 +47,7 @@ import { Role } from './enums';
           <button (click)="toggleSidebar()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors mr-3 lg:hidden">
             <mat-icon>menu</mat-icon>
           </button>
-          <div class="text-xl font-medium text-slate-800 dark:text-slate-100">EducaMVP</div>
+          <div class="text-xl font-medium text-slate-800 dark:text-slate-100">SIMA</div>
         </div>
 
         <nav class="flex-1 overflow-y-auto py-2">
