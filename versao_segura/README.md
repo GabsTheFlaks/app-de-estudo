@@ -69,10 +69,10 @@ No seu terminal, digite:
 
 ```bash
 # Clone este repositório
-$ git clone https://github.com/seu-usuario/seu-repositorio.git
+$ git clone https://github.com/GabsTheFlaks/app-de-estudo.git
 
 # Entre na pasta
-$ cd seu-repositorio
+$ cd app-de-estudo
 
 # Instale as dependências
 $ npm install
@@ -139,10 +139,10 @@ From your command line:
 
 ```bash
 # Clone this repository
-$ git clone https://github.com/your-username/your-repository.git
+$ git clone https://github.com/GabsTheFlaks/app-de-estudo.git
 
 # Go into the repository
-$ cd your-repository
+$ cd app-de-estudo
 
 # Install dependencies
 $ npm install
