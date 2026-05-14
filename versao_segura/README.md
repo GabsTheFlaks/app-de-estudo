@@ -1,62 +1,161 @@
-# Plataforma de Cursos e Trilhas de Aprendizagem
+<div align="center">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/angularjs/angularjs-original.svg" alt="Angular Logo" width="80" height="80">
+  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/supabase/supabase-original.svg" alt="Supabase Logo" width="80" height="80">
 
-Este é um projeto Angular desenvolvido para gerenciar cursos e postar aulas e materiais de estudo de forma estruturada. Ele utiliza Supabase para autenticação e banco de dados, e Tailwind CSS para a estilização.
+  <h1 align="center">EducaMVP</h1>
 
-## 🚀 Como executar este projeto no VS Code
+  <p align="center">
+    Uma Plataforma Moderna de Cursos e Gestão de Conhecimento
+    <br />
+    <a href="#-sobre-o-projeto"><strong>Explore a documentação »</strong></a>
+    <br />
+    <br />
+    <a href="#-funcionalidades">Funcionalidades</a>
+    ·
+    <a href="#-tecnologias">Tecnologias</a>
+    ·
+    <a href="#%EF%B8%8F-como-executar">Como Executar</a>
+  </p>
+</div>
 
-Siga este passo a passo para clonar, configurar e rodar o projeto na sua máquina local utilizando o VS Code.
+<p align="center">
+  <img alt="Angular" src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white">
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
+  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">
+</p>
 
-### 📋 Pré-requisitos
+> *🇬🇧 English version available below / Versão em Inglês disponível abaixo.*
 
-Certifique-se de ter os seguintes programas instalados em sua máquina:
-- **Node.js** (versão 20 ou superior recomendada): [Download Node.js](https://nodejs.org/)
-- **Visual Studio Code (VS Code)**: [Download VS Code](https://code.visualstudio.com/)
+## 📚 Sobre o Projeto
 
----
+O **EducaMVP** é um projeto de Sistema de Gestão de Aprendizagem (LMS) desenvolvido para centralizar treinamentos e distribuir conhecimento de forma estruturada.
 
-### ⚙️ Passo a passo da instalação
+Foi idealizado inicialmente como uma prova de conceito (MVP) para disciplinas acadêmicas (ex: Engenharia de Produção), servindo como uma ferramenta real para padronização de treinamentos (Standardized Work), gestão de conhecimento corporativo ou acadêmico e melhoria contínua através do feedback de usuários.
 
-1. **Faça o Download do Projeto**
-   - Baixe ou extraia o código-fonte em uma pasta no seu computador.
-
-2. **Abra o Projeto no VS Code**
-   - Abra o VS Code.
-   - Vá em `File > Open Folder...` (ou `Arquivo > Abrir Pasta...`) e selecione a pasta onde você extraiu o código.
-
-3. **Abra o Terminal**
-   - No VS Code, abra o terminal integrado clicando em `Terminal > New Terminal` (ou pressionando `` Ctrl + ` ``).
-
-4. **Instale as Dependências**
-   - No terminal, execute o seguinte comando para baixar e instalar todas as bibliotecas necessárias para rodar o projeto:
-     ```bash
-     npm install
-     ```
-
-5. **Inicie o Servidor de Desenvolvimento**
-   - Após o término da instalação (pode levar alguns minutos), execute o comando abaixo para rodar o projeto:
-     ```bash
-     npm run dev
-     ```
-   *(Você também pode usar `npm start` se preferir).*
-
-6. **Acesse a Aplicação**
-   - O terminal exibirá uma mensagem informando que a aplicação está rodando.
-   - Abra seu navegador (Chrome, Edge, Firefox, etc) e acesse:
-     **http://localhost:3000** (ou a porta especificada no terminal, geralmente 4200 ou 3000).
+Este projeto foca em alta performance e segurança, utilizando as ferramentas mais modernas do ecossistema front-end.
 
 ---
 
-### 🗄️ Informações do Banco de Dados (Supabase)
+## 🎯 Funcionalidades
 
-O aplicativo foi previamente configurado com chaves do **Supabase**. As chaves de acesso anônimas públicas para o frontend estão definidas no arquivo `src/env.ts` (estas chaves são seguras para ficar expostas no front-end, conforme as diretrizes do Supabase). Você não precisa criar um arquivo `.env` para rodar este projeto, ele já funcionará diretamente ao executar os comandos acima!
+- **Autenticação Segura:** Login e registro protegidos, baseados em Supabase Auth com proteção contra exploração de privilégios.
+- **Gestão de Turmas e Aulas:** Criação de cursos, postagem de vídeos e materiais (PDF, Google Docs, Apresentações).
+- **Interface Moderna (UX/UI):** Modais customizados, notificações (Toasts) não-intrusivas, "Dark Mode" inteligente e design responsivo.
+- **Busca em Tempo Real:** Pesquisa ultrarrápida de cursos e materiais (buscando direto no cache de memória).
+- **Interação Social:** Sistema de comentários em tempo real integrado às aulas.
 
 ---
 
-### 🎨 Tecnologias utilizadas
+## 🛠 Tecnologias
 
-- **Framework:** Angular 21
-- **Estilos:** Tailwind CSS 4
-- **Backend/DB:** Supabase
-- **Ícones:** Angular Material Icons
+A aplicação foi construída com foco em escalabilidade e manutenção:
 
-Se você tiver algum problema de inicialização, apague a pasta `node_modules` e tente rodar `npm install` novamente.
+*   [Angular 21](https://angular.dev/) (Framework Principal - utilizando Signals e Standalone Components)
+*   [Tailwind CSS v4](https://tailwindcss.com/) (Estilização e Design System)
+*   [Angular Material CDK](https://material.angular.io/) (Modais e Interações Ricas)
+*   [Supabase](https://supabase.com/) (Banco de Dados PostgreSQL, Realtime e Autenticação)
+*   [TypeScript](https://www.typescriptlang.org/) (Tipagem Segura)
+
+💡 *Para uma leitura aprofundada sobre as decisões técnicas, testes e padrões utilizados neste projeto, leia o nosso documento de [Arquitetura (ARCHITECTURE.md)](./ARCHITECTURE.md).*
+
+---
+
+## ⚙️ Como Executar
+
+Para clonar e rodar a aplicação no seu computador, você precisará do [Git](https://git-scm.com) e do [Node.js](https://nodejs.org/en/download/) (v20+ recomendado) instalados.
+
+No seu terminal, digite:
+
+```bash
+# Clone este repositório
+$ git clone https://github.com/seu-usuario/seu-repositorio.git
+
+# Entre na pasta
+$ cd seu-repositorio
+
+# Instale as dependências
+$ npm install
+
+# Crie seu banco de dados no Supabase e rode os scripts SQL
+# Leia o arquivo SUPABASE_SETUP.md para instruções do banco.
+
+# Configure as variáveis de ambiente (URL e KEY do Supabase)
+# Copie o arquivo de exemplo
+$ cp .env.example .env
+
+# Inicie o servidor de desenvolvimento
+$ npm run dev
+```
+
+A aplicação abrirá no seu navegador padrão em: `http://localhost:3000`
+
+---
+---
+
+<div align="center">
+  <h1>🇬🇧 English Version</h1>
+</div>
+
+## 📚 About the Project
+
+**EducaMVP** is a Learning Management System (LMS) designed to centralize training and distribute knowledge in a structured way.
+
+Initially idealized as a Proof of Concept (MVP) for academic disciplines (e.g., Production Engineering), it serves as a real tool for training standardization (Standardized Work), corporate or academic knowledge management, and continuous improvement through user feedback.
+
+This project focuses on high performance and security, using the most modern tools in the front-end ecosystem.
+
+---
+
+## 🎯 Features
+
+- **Secure Authentication:** Protected login and registration based on Supabase Auth with privilege escalation protection.
+- **Course and Lesson Management:** Creation of courses, posting videos, and materials (PDF, Google Docs, Slides).
+- **Modern Interface (UX/UI):** Custom modals, non-intrusive notifications (Toasts), smart "Dark Mode," and responsive design.
+- **Real-time Search:** Ultra-fast search for courses and materials (searching directly in memory cache).
+- **Social Interaction:** Real-time commenting system integrated into lessons.
+
+---
+
+## 🛠 Built With
+
+The application was built with a focus on scalability and maintainability:
+
+*   [Angular 21](https://angular.dev/) (Main Framework - using Signals and Standalone Components)
+*   [Tailwind CSS v4](https://tailwindcss.com/) (Styling and Design System)
+*   [Angular Material CDK](https://material.angular.io/) (Modals and Rich Interactions)
+*   [Supabase](https://supabase.com/) (PostgreSQL Database, Realtime, and Authentication)
+*   [TypeScript](https://www.typescriptlang.org/) (Static Typing)
+
+💡 *For an in-depth read on the technical decisions, testing, and patterns used in this project, read our [Architecture Document (ARCHITECTURE.md)](./ARCHITECTURE.md).*
+
+---
+
+## ⚙️ Getting Started
+
+To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (v20+ recommended) installed on your computer.
+
+From your command line:
+
+```bash
+# Clone this repository
+$ git clone https://github.com/your-username/your-repository.git
+
+# Go into the repository
+$ cd your-repository
+
+# Install dependencies
+$ npm install
+
+# Set up your Supabase database and run the SQL scripts
+# Read the SUPABASE_SETUP.md file for database instructions.
+
+# Set up your environment variables (Supabase URL and KEY)
+# Copy the example file
+$ cp .env.example .env
+
+# Run the app
+$ npm run dev
+```
+
+The application will open in your default browser at: `http://localhost:3000`
