@@ -1,0 +1,27 @@
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { SupabaseService } from '../services/supabase.service';
+import { toObservable } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs/operators';
+
+export const adminGuard = () => {
+  const router = inject(Router);
+  const supabase = inject(SupabaseService);
+
+  return toObservable(supabase.isLoading).pipe(
+    filter((loading) => !loading),
+    map(() => {
+      const isAuth = !!supabase.currentUser();
+      if (!isAuth) {
+        return router.createUrlTree(['/login']);
+      }
+      
+      const appUser = supabase.appUser();
+      if (appUser && appUser.role === 'admin') {
+        return true;
+      }
+      
+      return router.createUrlTree(['/dashboard']);
+    })
+  );
+};
