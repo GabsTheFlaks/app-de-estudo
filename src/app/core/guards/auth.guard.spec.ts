@@ -28,7 +28,7 @@ describe('authGuard', () => {
     });
   });
 
-  it('should allow access when user is authenticated', (done) => {
+  it('should allow access when user is authenticated', (done: any) => {
     mockLoading.set(false);
     mockUser.set({ id: 'user-123' });
 
@@ -45,7 +45,7 @@ describe('authGuard', () => {
     });
   });
 
-  it('should redirect to /login when user is not authenticated', (done) => {
+  it('should redirect to /login when user is not authenticated', (done: any) => {
     mockLoading.set(false);
     mockUser.set(null);
 

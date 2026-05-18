@@ -48,8 +48,26 @@ import { Course } from '../../core/models/interfaces';
                 </div>
                 <h3 class="text-white font-medium text-[20px] leading-tight hover:underline truncate relative z-10">{{ course.title }}</h3>
               </div>
-              <div class="flex-1 p-5 flex flex-col">
-                <p class="text-[13px] text-slate-500 dark:text-slate-400 line-clamp-3 mb-4 leading-relaxed flex-1">{{ course.description || 'Sem descrição' }}</p>
+
+              <!-- Teacher Avatar -->
+              <div class="absolute right-4 top-[70px] z-20 group-hover:scale-110 transition-transform duration-300">
+                  <div class="w-[70px] h-[70px] bg-indigo-500 rounded-full border-4 border-white dark:border-slate-800 flex items-center justify-center shadow-sm text-3xl text-white font-normal overflow-hidden bg-gradient-to-br from-indigo-500 to-purple-600">
+                    @if (course.users?.avatar_url) {
+                      <img [src]="course.users?.avatar_url" [alt]="course.users?.firstname" class="w-full h-full object-cover" />
+                    } @else {
+                      {{ course.users?.firstname?.[0]?.toUpperCase() || course.title[0]?.toUpperCase() || 'C' }}
+                    }
+                  </div>
+              </div>
+
+              <div class="flex-1 p-5 pt-12 flex flex-col">
+                <p class="text-[13px] text-slate-500 dark:text-slate-400 line-clamp-2 mb-2 leading-relaxed flex-1">{{ course.description || 'Sem descrição' }}</p>
+                @if (course.users?.firstname) {
+                  <div class="mt-auto pt-2 mb-3 flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <mat-icon class="text-[14px] w-[14px] h-[14px]">school</mat-icon>
+                    Prof. {{ course.users?.firstname }} {{ course.users?.lastname }}
+                  </div>
+                }
                 <div class="flex items-center justify-between mt-auto">
                   <span class="text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 px-3 py-1 rounded-full shadow-sm">
                     Acessar turma

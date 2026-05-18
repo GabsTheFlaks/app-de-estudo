@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { createClient, SupabaseClient, User } from '@supabase/supabase-js';
 import { env } from '../../../env';
 import { AppUser } from '../models/interfaces';
@@ -22,6 +23,8 @@ export class SupabaseService {
   public readonly appUser = this._appUser.asReadonly();
   public readonly isLoading = this._loading.asReadonly();
 
+  private platformId = inject(PLATFORM_ID);
+
   constructor() {
     const url = env.SUPABASE_URL || 'https://placeholder.supabase.co';
     const key = env.SUPABASE_ANON_KEY || 'missing-key';
@@ -31,6 +34,12 @@ export class SupabaseService {
   }
 
   private async init() {
+    // Bloqueia execução no servidor Node (SSR) para evitar dessincronização de login
+    if (!isPlatformBrowser(this.platformId)) {
+      this._loading.set(false);
+      return;
+    }
+
     try {
       const { data: { session } } = await this.client.auth.getSession();
       if (session?.user) {
@@ -81,9 +90,13 @@ export class SupabaseService {
     const userId = this._appUser()?.id;
     if (!userId) throw new Error("No user logged in");
     
+    // Allowlist: Garantir que o frontend nunca envie campos sensíveis (como role) para o banco
+    const { firstname, lastname, avatar_url } = updates;
+    const safeUpdates = { firstname, lastname, avatar_url };
+
     const { error } = await this.client
       .from('users')
-      .update(updates)
+      .update(safeUpdates)
       .eq('id', userId);
       
     if (error) throw error;

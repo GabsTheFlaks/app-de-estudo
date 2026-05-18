@@ -1,6 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import 'driver.js/dist/driver.css';
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -24,4 +25,50 @@ body.cinema-mode header {
 
 body.cinema-mode main {
   padding: 0 !important;
+}
+
+/* OpenDyslexic Local Font Integration */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/assets/fonts/opendyslexic/OpenDyslexic-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('/assets/fonts/opendyslexic/OpenDyslexic-Bold.woff2') format('woff2');
+  font-weight: bold;
+  font-display: swap;
+}
+
+.font-dyslexic {
+  font-family: 'OpenDyslexic', sans-serif !important;
+}
+
+/* Accessibility Themes */
+.theme-sepia {
+  background-color: #f4ecd8 !important;
+  color: #5b4636 !important;
+}
+
+.theme-sepia p,
+.theme-sepia h1,
+.theme-sepia h2,
+.theme-sepia h3,
+.theme-sepia span {
+  color: #5b4636 !important;
+}
+
+.theme-high-contrast {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+}
+
+.theme-high-contrast p,
+.theme-high-contrast h1,
+.theme-high-contrast h2,
+.theme-high-contrast h3,
+.theme-high-contrast span {
+  color: #ffff00 !important;
 }

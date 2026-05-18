@@ -1,9 +1,10 @@
 import { Injectable, inject } from '@angular/core';
 import { SupabaseService } from './supabase.service';
-import { Course, Lesson, Comment } from '../models/interfaces';
+import { Course, Lesson, Comment, LessonAttachment, AndonAlert } from '../models/interfaces';
+import { RealtimeChannel } from '@supabase/supabase-js';
 
 // Re-export for backward compatibility
-export type { Course, Lesson, Comment } from '../models/interfaces';
+export type { Course, Lesson, Comment, LessonAttachment, AndonAlert } from '../models/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -21,14 +22,14 @@ export class CourseService {
 
     const { data, error } = await this.supabase.client
       .from('courses')
-      .select('id, title, description, category, link_drive, file_type, thumbnail_url, announcement');
+      .select('id, title, description, category, link_drive, file_type, thumbnail_url, announcement, instructor_id, users(firstname, lastname, avatar_url)');
       
     if (error) {
       console.error('Error fetching courses:', error);
       throw error;
     }
     
-    this.cachedCourses = data as Course[];
+    this.cachedCourses = data as unknown as Course[];
     return this.cachedCourses;
   }
 
@@ -40,7 +41,7 @@ export class CourseService {
 
     const { data, error } = await this.supabase.client
       .from('courses')
-      .select('id, title, description, category, link_drive, file_type, thumbnail_url, announcement')
+      .select('id, title, description, category, link_drive, file_type, thumbnail_url, announcement, instructor_id, users(firstname, lastname, avatar_url)')
       .eq('id', id)
       .single();
       
@@ -49,13 +50,15 @@ export class CourseService {
       throw error;
     }
     
-    return data as Course;
+    return data as unknown as Course;
   }
 
   async addCourse(course: Omit<Course, 'id'>): Promise<Course | null> {
+    const { data: { user } } = await this.supabase.client.auth.getUser();
+
     const { data, error } = await this.supabase.client
       .from('courses')
-      .insert([course])
+      .insert([{ ...course, instructor_id: user?.id }])
       .select()
       .single();
       
@@ -332,12 +335,57 @@ export class CourseService {
     if (error) throw error;
   }
 
-  async getPendingAndonAlerts(): Promise<any[]> {
+  subscribeToAndonAlerts(callback: (alert: AndonAlert) => void): RealtimeChannel {
+    console.log('Configurando canal de Realtime para andon_alerts...');
+
+    const channel = this.supabase.client.channel('admin_andon_realtime');
+
+    channel.on('postgres_changes', {
+      event: 'INSERT',
+      schema: 'public',
+      table: 'andon_alerts'
+    }, async (payload) => {
+      console.log('Evento INSERT detectado no andon_alerts:', payload);
+
+      const newId = payload.new['id'];
+
+      try {
+        // Tenta buscar o alerta completo com os nomes de curso/aula
+        const { data, error } = await this.supabase.client
+          .from('andon_alerts')
+          .select(`
+            id, user_id, user_name, course_id, lesson_id, description, created_at, status,
+            courses(title),
+            lessons(title)
+          `)
+          .eq('id', newId)
+          .single();
+
+        if (data && !error) {
+          console.log('Alerta completo recuperado com sucesso:', data);
+          callback(data as unknown as AndonAlert);
+        } else {
+          console.warn('Não foi possível recuperar dados relacionados, enviando alerta puro:', error);
+          callback(payload.new as AndonAlert);
+        }
+      } catch (e) {
+        console.error('Erro ao processar payload de Andon:', e);
+        callback(payload.new as AndonAlert);
+      }
+    });
+
+    return channel;
+  }
+
+  async getPendingAndonAlerts(): Promise<AndonAlert[]> {
     const { data, error } = await this.supabase.client
       .from('andon_alerts')
       .select(`
         id,
+        user_id,
         user_name,
+        course_id,
+        lesson_id,
         description,
         created_at,
         status,
@@ -351,7 +399,7 @@ export class CourseService {
       if (error.code === '42P01') return [];
       throw error;
     }
-    return data || [];
+    return (data as unknown as AndonAlert[]) || [];
   }
 
   async resolveAndonAlert(id: string): Promise<void> {
@@ -364,7 +412,7 @@ export class CourseService {
   }
 
   // Lesson Attachments (Materiais Extras)
-  async getLessonAttachments(lessonId: string): Promise<any[]> {
+  async getLessonAttachments(lessonId: string): Promise<LessonAttachment[]> {
     const { data, error } = await this.supabase.client
       .from('lesson_attachments')
       .select('*')

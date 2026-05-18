@@ -30,10 +30,10 @@ describe('adminGuard', () => {
     });
   });
 
-  it('should allow access when user is admin', (done) => {
+  it('should allow access when user is admin', (done: any) => {
     mockLoading.set(false);
     mockUser.set({ id: 'admin-1' });
-    mockAppUser.set({ id: 'admin-1', email: 'a@a.com', firstname: 'Admin', lastname: 'User', role: 'admin', avatar_url: null });
+    mockAppUser.set({ id: 'admin-1', email: 'a@a.com', firstname: 'Admin', lastname: 'User', role: 'admin', avatar_url: undefined });
 
     TestBed.runInInjectionContext(() => {
       const result = adminGuard();
@@ -48,10 +48,10 @@ describe('adminGuard', () => {
     });
   });
 
-  it('should redirect to /dashboard for non-admin authenticated users', (done) => {
+  it('should redirect to /dashboard for non-admin authenticated users', (done: any) => {
     mockLoading.set(false);
     mockUser.set({ id: 'student-1' });
-    mockAppUser.set({ id: 'student-1', email: 's@s.com', firstname: 'Student', lastname: 'User', role: 'student', avatar_url: null });
+    mockAppUser.set({ id: 'student-1', email: 's@s.com', firstname: 'Student', lastname: 'User', role: 'student', avatar_url: undefined });
 
     TestBed.runInInjectionContext(() => {
       const result = adminGuard();
@@ -66,7 +66,7 @@ describe('adminGuard', () => {
     });
   });
 
-  it('should redirect to /login when user is not authenticated', (done) => {
+  it('should redirect to /login when user is not authenticated', (done: any) => {
     mockLoading.set(false);
     mockUser.set(null);
     mockAppUser.set(null);

@@ -1,10 +1,11 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { Component, OnInit, OnDestroy, inject, signal, computed, PLATFORM_ID } from '@angular/core';
+import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CourseService } from '../../core/services/course.service';
 import { SupabaseService } from '../../core/services/supabase.service';
+import { RealtimeChannel } from '@supabase/supabase-js';
 import { Course, Lesson } from '../../core/models/interfaces';
 import { DialogService } from '../../shared/components/dialog/dialog.service';
 import { ToastService } from '../../shared/services/toast.service';
@@ -88,28 +89,21 @@ import { ProgressService } from '../../core/services/progress.service';
             </div>
           </div>
           
-          <!-- Teacher Avatar (Placeholder) -->
+          <!-- Teacher Avatar -->
           <div class="absolute top-6 right-6 z-20">
-             <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 text-white shadow-sm">
-               <mat-icon>school</mat-icon>
+             <div class="w-14 h-14 bg-indigo-500 rounded-full border-4 border-white/30 flex items-center justify-center shadow-lg overflow-hidden transition-transform hover:scale-110">
+               @if (course()?.users?.avatar_url) {
+                 <img [src]="course()!.users!.avatar_url" class="w-full h-full object-cover" [alt]="course()!.users!.firstname" />
+               } @else {
+                 <span class="text-white font-bold text-xl">{{ course()!.users?.firstname?.[0] || 'P' }}</span>
+               }
              </div>
           </div>
         </div>
 
-        <div class="mt-6 flex flex-col lg:flex-row gap-6 relative items-start">
-          <!-- Sidebar -->
-          <div class="w-full lg:w-56 shrink-0 order-2 lg:order-1">
-            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm">
-              <h3 class="font-medium text-sm text-slate-800 mb-4">Próximas atividades</h3>
-              <p class="text-xs text-slate-500 mb-4">Nenhuma atividade para a próxima semana!</p>
-              <div class="text-right">
-                <a href="javascript:void(0)" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors">Ver tudo</a>
-              </div>
-            </div>
-          </div>
-          
+        <div class="mt-6 relative">
           <!-- Main Content (Stream) -->
-          <div class="flex-1 space-y-4 w-full order-1 lg:order-2">
+          <div class="space-y-4 w-full max-w-4xl mx-auto">
             
             <!-- Mural de Avisos da Turma -->
             @if (course()?.announcement) {
@@ -215,9 +209,13 @@ import { ProgressService } from '../../core/services/progress.service';
                      <div class="flex-grow relative">
                        <a [routerLink]="['/lesson', lesson.id, 'viewer']" class="px-5 py-4 flex items-start sm:items-center justify-between cursor-pointer w-full">
                          <div class="flex items-start sm:items-center space-x-4">
-                             <div class="w-10 h-10 bg-indigo-600 text-white rounded-full flex items-center justify-center shrink-0" [ngClass]="isCompleted(lesson.id!) ? 'bg-emerald-500' : 'bg-indigo-600'">
-                               <mat-icon>{{ isCompleted(lesson.id!) ? 'check_circle' : 'menu_book' }}</mat-icon>
-                            </div>
+                              <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0 overflow-hidden shadow-sm" [ngClass]="isCompleted(lesson.id!) ? 'bg-emerald-500' : 'bg-indigo-600'">
+                                @if (course()?.users?.avatar_url) {
+                                  <img [src]="course()!.users!.avatar_url" class="w-full h-full object-cover opacity-90" [alt]="course()!.users!.firstname" />
+                                } @else {
+                                  <mat-icon class="text-white text-[20px]">{{ isCompleted(lesson.id!) ? 'check_circle' : 'menu_book' }}</mat-icon>
+                                }
+                             </div>
                             <div>
                                <h4 class="text-slate-800 font-medium text-[15px] group-hover:underline leading-tight pr-10" [class.text-slate-500]="isCompleted(lesson.id!)">
                                  Um novo material foi postado: {{ lesson.title }}
@@ -271,7 +269,7 @@ import { ProgressService } from '../../core/services/progress.service';
     </div>
   `
 })
-export class ClassPage implements OnInit {
+export class ClassPage implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private courseService = inject(CourseService);
   private supabase = inject(SupabaseService);
@@ -279,11 +277,13 @@ export class ClassPage implements OnInit {
   private toast = inject(ToastService);
   private enrollmentService = inject(EnrollmentService);
   private progressService = inject(ProgressService);
+  private platformId = inject(PLATFORM_ID);
 
   course = signal<Course | null>(null);
   lessons = signal<Lesson[]>([]);
   isLoading = signal<boolean>(true);
   error = signal<boolean>(false);
+  private lessonsChannel: RealtimeChannel | null = null;
   appUser = this.supabase.appUser;
 
   hasLessons = computed(() => this.lessons().length > 0);
@@ -509,6 +509,26 @@ export class ClassPage implements OnInit {
              const lessons = await this.courseService.getLessons(id);
              this.lessons.set(lessons);
              await this.progressService.loadProgress(id);
+
+             // Save last visual view timestamp to localStorage to clear new material flags [Item 5]
+             if (isPlatformBrowser(this.platformId)) {
+               localStorage.setItem(`sima_course_last_viewed_${id}`, new Date().toISOString());
+             }
+
+             // Subscrição real-time para esta turma específica
+             this.lessonsChannel = this.supabase.client
+               .channel(`public:lessons_${id}`)
+               .on('postgres_changes', {
+                 event: '*',
+                 schema: 'public',
+                 table: 'lessons',
+                 filter: `course_id=eq.${id}`
+               }, async () => {
+                 // Recarrega as aulas do servidor furando o cache
+                 const updatedLessons = await this.courseService.getLessons(id, true);
+                 this.lessons.set(updatedLessons);
+               })
+               .subscribe();
           }
           
           if (loadingTimeout) clearTimeout(loadingTimeout);
@@ -528,5 +548,12 @@ export class ClassPage implements OnInit {
         this.error.set(true);
       }
     });
+  }
+
+  ngOnDestroy() {
+    if (this.lessonsChannel) {
+      this.supabase.client.removeChannel(this.lessonsChannel);
+      this.lessonsChannel = null;
+    }
   }
 }

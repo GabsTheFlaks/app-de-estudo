@@ -1,10 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CourseService } from '../../core/services/course.service';
+import { SupabaseService } from '../../core/services/supabase.service';
 import { CourseImageComponent } from '../../shared/components/course-image.component';
 import { MatIconModule } from '@angular/material/icon';
+import { RealtimeChannel } from '@supabase/supabase-js';
+import { AndonAlert } from '../../core/models/interfaces';
 
 @Component({
   selector: 'app-admin-page',
@@ -193,18 +196,37 @@ import { MatIconModule } from '@angular/material/icon';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminPage implements OnInit {
+export class AdminPage implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private courseService = inject(CourseService);
+  private supabase = inject(SupabaseService);
   private router = inject(Router);
+  private andonChannel: RealtimeChannel | null = null;
 
   isLoading = signal(false);
   errorMessage = signal('');
   successMessage = signal('');
-  activeAlerts = signal<any[]>([]);
+  activeAlerts = signal<AndonAlert[]>([]);
 
   async ngOnInit() {
     await this.loadActiveAlerts();
+
+    console.log('Iniciando subscrição Andon...');
+    this.andonChannel = this.courseService.subscribeToAndonAlerts((newAlert: AndonAlert) => {
+      console.log('Novo alerta recebido via Realtime:', newAlert);
+      this.activeAlerts.update(alerts => [newAlert, ...alerts]);
+    });
+
+    this.andonChannel.subscribe((status) => {
+      console.log('Status da subscrição Andon:', status);
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.andonChannel) {
+      this.supabase.client.removeChannel(this.andonChannel);
+      this.andonChannel = null;
+    }
   }
 
   async loadActiveAlerts() {

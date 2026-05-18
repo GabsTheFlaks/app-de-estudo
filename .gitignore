@@ -4,6 +4,8 @@
 .env*
 !.env.example
 src/env.ts
+src/env.js
+src/env.*
 
 # Compiled output
 /dist
