@@ -53,14 +53,14 @@ describe('EmbedUrlService', () => {
       expect(thumb).toContain('img.youtube.com');
     });
 
-    it('should return null for non-YouTube URLs', () => {
+    it('should extract Google Drive thumbnail', () => {
       const url = 'https://drive.google.com/file/d/abc123/view';
-      expect(service.getThumbnailUrl(url)).toBeNull();
+      expect(service.getThumbnailUrl(url)).toContain('drive.google.com/thumbnail');
     });
 
-    it('should return null for undefined/null', () => {
-      expect(service.getThumbnailUrl(undefined)).toBeNull();
-      expect(service.getThumbnailUrl(null as unknown as string)).toBeNull();
+    it('should return empty string for undefined/null', () => {
+      expect(service.getThumbnailUrl(undefined)).toBe('');
+      expect(service.getThumbnailUrl(null as unknown as string)).toBe('');
     });
   });
 

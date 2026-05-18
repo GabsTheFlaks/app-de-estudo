@@ -139,7 +139,8 @@ export class RegisterPage {
       });
 
       if (error) {
-        this.errorMessage.set(error.message);
+        console.error('Erro no registro:', error);
+        this.errorMessage.set('Não foi possível criar a conta. Verifique os dados e tente novamente.');
       } else if (data.user) {
          // O profile é criado automaticamente via Database Trigger (ver SUPABASE_SETUP.md)
          this.router.navigate(['/dashboard']);

@@ -32,7 +32,7 @@ export interface DialogResult {
   imports: [CommonModule, FormsModule, MatIconModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-sm mx-4 p-6 flex flex-col gap-4">
+    <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-700 w-full max-w-sm mx-4 p-6 flex flex-col gap-4 pointer-events-auto">
 
       <!-- Icon + Title -->
       <div class="flex items-start gap-3">

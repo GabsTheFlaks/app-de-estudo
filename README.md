@@ -1,170 +1,81 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/angularjs/angularjs-original.svg" alt="Angular Logo" width="80" height="80">
-  <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/supabase/supabase-original.svg" alt="Supabase Logo" width="80" height="80">
+# SIMA — Plataforma de Cursos e Trilhas de Aprendizagem
 
-  <h1 align="center">SIMA</h1>
-
-  <p align="center">
-    Uma Plataforma Moderna de Cursos e Gestão de Conhecimento
-    <br />
-    <a href="#-sobre-o-projeto"><strong>Explore a documentação »</strong></a>
-    <br />
-    <br />
-    <a href="#-funcionalidades">Funcionalidades</a>
-    ·
-    <a href="#-tecnologias">Tecnologias</a>
-    ·
-    <a href="#%EF%B8%8F-como-executar">Como Executar</a>
-  </p>
-</div>
-
-<p align="center">
-  <img alt="Angular" src="https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white">
-  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
-  <img alt="Supabase" src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white">
-  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">
-</p>
-
-> *🇬🇧 English version available below / Versão em Inglês disponível abaixo.*
-
-## 📚 Sobre o Projeto
-
-O **SIMA** é um projeto de Sistema de Gestão de Aprendizagem (LMS) desenvolvido para centralizar treinamentos e distribuir conhecimento de forma estruturada.
-
-Foi idealizado inicialmente como uma prova de conceito (MVP) para disciplinas acadêmicas (ex: Engenharia de Produção), servindo como uma ferramenta real para padronização de treinamentos (Standardized Work), gestão de conhecimento corporativo ou acadêmico e melhoria contínua através do feedback de usuários e sistema *Andon* de reporte de erros.
-
-Este projeto foca em alta performance e segurança, utilizando as ferramentas mais modernas do ecossistema front-end.
+Plataforma LMS (Learning Management System) desenvolvida em **Angular 21** para gerenciar turmas, aulas, inscrições e progresso de alunos. Utiliza **Supabase** para autenticação e banco de dados, e **Tailwind CSS 4** para estilização.
 
 ---
 
-## 🎯 Funcionalidades
+## 🚀 Como executar localmente
 
-- **Autenticação Segura:** Login e registro protegidos, baseados em Supabase Auth com proteção contra exploração de privilégios.
-- **Gestão de Turmas e Múltiplos Anexos:** Criação de cursos, postagem de vídeos e múltiplos materiais de apoio (PDF, Google Docs, Apresentações) através de FormArrays dinâmicos.
-- **Interface Moderna (UX/UI):** Modais e diálogos customizados via Angular CDK, "Modo Cinema", navegação fluida entre aulas, notificações em Toasts não-intrusivos e "Dark Mode" inteligente e design responsivo.
-- **Organização Flexível:** Funcionalidade *Drag and Drop* (Arrastar e Soltar) para que os administradores reordenem os conteúdos da turma com extrema facilidade, sincronizados em tempo real com o banco de dados.
-- **Interação, Retenção e Qualidade:**
-  - Sistema de comentários em tempo real (fórum).
-  - Sistema de **Avaliação de Aulas** (1 a 5 estrelas) para manter o conteúdo relevante (Kaizen).
-  - **Sistema Andon:** Mecanismo integrado de reporte de problemas para alertas rápidos e resolução de falhas nos materiais, garantindo máxima qualidade da operação.
+### Pré-requisitos
+- **Node.js** v20 ou superior — [Download](https://nodejs.org/)
+- **Visual Studio Code** — [Download](https://code.visualstudio.com/)
 
----
-
-## 🛠 Tecnologias
-
-A aplicação foi construída com foco em escalabilidade, manutenibilidade e Custo Zero (Serverless):
-
-*   [Angular 21](https://angular.dev/) (Framework Principal - utilizando Signals e Standalone Components, sem *NgModules*)
-*   [Tailwind CSS v4](https://tailwindcss.com/) (Estilização e Design System nativo)
-*   [Angular Material CDK](https://material.angular.io/) (Drag & Drop, Interações, Modais e Componentes UI robustos)
-*   [Supabase](https://supabase.com/) (Banco de Dados PostgreSQL, Realtime e Autenticação)
-*   [TypeScript](https://www.typescriptlang.org/) (Tipagem Forte)
-
-💡 *Para uma leitura aprofundada sobre as decisões técnicas, testes, o conceito do "Sistema Andon", gestão de estado (Mutabilidade vs Caching) e políticas RLS de segurança utilizados neste projeto, leia o nosso documento de [Arquitetura (ARCHITECTURE.md)](./ARCHITECTURE.md).*
-
----
-
-## ⚙️ Como Executar
-
-Para clonar e rodar a aplicação no seu computador, você precisará do [Git](https://git-scm.com) e do [Node.js](https://nodejs.org/en/download/) (v20+ recomendado) instalados.
-
-No seu terminal, digite:
+### Passo a passo
 
 ```bash
-# Clone este repositório
-$ git clone https://github.com/GabsTheFlaks/app-de-estudo.git
+# 1. Instale as dependências
+npm install
 
-# Entre na pasta
-$ cd app-de-estudo
+# 2. Configure as variáveis de ambiente
+# Copie o arquivo de exemplo e preencha com suas chaves do Supabase
+cp .env.example .env
 
-# Instale as dependências
-$ npm install
-
-# Crie seu banco de dados no Supabase e rode os scripts SQL
-# Leia o arquivo SUPABASE_SETUP.md para as instruções e triggers essenciais do banco de dados.
-
-# Configure as variáveis de ambiente (URL e KEY do Supabase)
-# Copie o arquivo de exemplo para poder injetar chaves no seu sistema local.
-$ cp .env.example .env
-
-# Inicie o servidor de desenvolvimento e curta seu novo LMS
-$ npm run dev
+# 3. Inicie o servidor de desenvolvimento
+npm run dev
 ```
 
-A aplicação abrirá no seu navegador padrão em: `http://localhost:3000`
-
----
----
-
-<div align="center">
-  <h1>🇬🇧 English Version</h1>
-</div>
-
-## 📚 About the Project
-
-**SIMA** is a Learning Management System (LMS) designed to centralize training and distribute knowledge in a structured, lean way.
-
-Initially idealized as a Proof of Concept (MVP) for academic disciplines (e.g., Production Engineering), it serves as a real tool for training standardization (Standardized Work), corporate or academic knowledge management, and continuous improvement (Kaizen) through user feedback and an integrated *Andon* error-reporting system.
-
-This project focuses on high performance and security, using the most modern tools in the front-end ecosystem without relying on expensive infrastructure.
+Acesse: **http://localhost:3000**
 
 ---
 
-## 🎯 Features
+## 🗄️ Banco de Dados (Supabase)
 
-- **Secure Authentication:** Protected login and registration based on Supabase Auth, combined with strict database triggers against privilege escalation.
-- **Course and Attachments Management:** Creation of courses, posting main videos, and multiple support materials (PDFs, Spreadsheets) managed dynamically using Angular FormArrays.
-- **Modern Interface (UX/UI):** Custom modals/dialogs via Angular CDK, "Cinema Mode" for distraction-free studying, fluid inter-lesson navigation, smart "Dark Mode," responsive design, and Toast notifications.
-- **Flexible Organization:** Built-in *Drag and Drop* functionality allowing administrators to visually reorder lessons within a course, instantly syncing changes with the remote database.
-- **Social Interaction, Retention & Quality Check:**
-  - Real-time lesson discussion forum (WebSockets).
-  - **Lesson Ratings System** (1 to 5 stars) encouraging Kaizen principles.
-  - **Andon System:** Integrated reporting mechanism allowing students to flag broken or outdated materials straight to an admin dashboard for swift resolution.
+Siga o arquivo [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md) para criar as tabelas e configurar as políticas de segurança (RLS).
 
----
+### Migrations disponíveis
 
-## 🛠 Built With
-
-The application was built emphasizing horizontal scalability and a Serverless footprint:
-
-*   [Angular 21](https://angular.dev/) (Main Framework - fully utilizing Signals and Standalone Components)
-*   [Tailwind CSS v4](https://tailwindcss.com/) (Styling and Design System)
-*   [Angular Material CDK](https://material.angular.io/) (Drag & Drop behavior, Modals, Overlays)
-*   [Supabase](https://supabase.com/) (PostgreSQL Database, Realtime, and Authentication layers)
-*   [TypeScript](https://www.typescriptlang.org/) (Static Typing)
-
-💡 *For an in-depth read on the technical decisions, state mutability handling, testing practices, and our strict RLS (Row Level Security) approaches, check out our [Architecture Document (ARCHITECTURE.md)](./ARCHITECTURE.md).*
+| Arquivo | Descrição |
+|---------|-----------|
+| `SUPABASE_SETUP.md` | Script principal — cria todas as tabelas (`users`, `courses`, `lessons`, `comments`) |
+| `supabase/migrations/phase2_tables.sql` | Tabelas de Fase 2 — `lesson_progress`, `enrollments`, `learning_paths` |
+| `supabase/migrations/add_lesson_order.sql` | Adiciona coluna `order` nas aulas para controle de sequência |
 
 ---
 
-## ⚙️ Getting Started
+## ✨ Funcionalidades
 
-To clone and run this application, you'll need [Git](https://git-scm.com) and [Node.js](https://nodejs.org/en/download/) (v20+ recommended) installed on your computer.
+### Para Alunos
+- 🔐 **Autenticação** — Cadastro e login via Supabase Auth
+- 📚 **Dashboard** — Listagem de turmas com busca e filtro por categoria
+- 🎓 **Inscrições** — Auto-inscrição em turmas com status visual
+- 📈 **Progresso** — Marcar aulas como concluídas com barra de progresso
+- 💬 **Comentários** — Comentar nas aulas com paginação
+- 🔖 **Salvos** — Salvar aulas para acessar depois
+- 👤 **Perfil** — Editar nome, foto e trocar senha
 
-From your command line:
+### Para Administradores
+- ➕ **Criar turmas** — Com categoria, tipo de arquivo e thumbnail
+- 📝 **Gerenciar aulas** — Criação sequencial com ordem automática
+- 🗑️ **Moderação** — Deletar comentários de qualquer aluno
 
-```bash
-# Clone this repository
-$ git clone https://github.com/GabsTheFlaks/app-de-estudo.git
+### Técnico
+- 🔍 **Busca global** — No header, busca em turmas e aulas simultaneamente
+- 🌐 **SEO** — Metadados dinâmicos por página via `SeoService`
+- ⚡ **Performance** — Cache de queries, skeleton loaders e `@defer` blocks
+- 🌙 **Dark mode** — Suporte completo via Tailwind e classe `.dark`
 
-# Go into the repository
-$ cd app-de-estudo
+---
 
-# Install dependencies
-$ npm install
+## 🛠️ Tecnologias
 
-# Set up your Supabase database and run the SQL scripts
-# Read the SUPABASE_SETUP.md file for crucial database setup commands and triggers.
+| Tecnologia | Versão | Uso |
+|------------|--------|-----|
+| Angular | 21 | Framework principal |
+| Tailwind CSS | 4 | Estilização |
+| Supabase | 2.x | Autenticação + Banco de dados |
+| Angular Material | 21 | Ícones |
 
-# Set up your environment variables (Supabase URL and KEY)
-# Copy the example file
-$ cp .env.example .env
-
-# Run the app
-$ npm run dev
-```
-
-The application will open in your default browser at: `http://localhost:3000`
+---
 
 ## 📁 Estrutura do Projeto
 

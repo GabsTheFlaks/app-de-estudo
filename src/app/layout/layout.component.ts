@@ -1,12 +1,16 @@
-import { Component, inject, signal, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, inject, signal, OnInit, OnDestroy, HostListener, AfterViewInit, PLATFORM_ID } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TourService } from '../shared/services/tour.service';
 import { MatIconModule } from '@angular/material/icon';
 import { SupabaseService } from '../core/services/supabase.service';
 import { ToastService } from '../shared/services/toast.service';
 import { SearchService, SearchResult } from '../core/services/search.service';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { CourseService } from '../core/services/course.service';
+import { Course } from '../core/models/interfaces';
+import { StudyToolsService } from '../core/services/study-tools.service';
 
 @Component({
   selector: 'app-layout',
@@ -56,24 +60,41 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 
         <nav class="flex-1 overflow-y-auto py-2">
           <div class="px-3 space-y-1">
-            <a routerLink="/dashboard" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" [routerLinkActiveOptions]="{exact: true}" (click)="closeOnMobile()" class="flex items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <a id="tour-home" routerLink="/dashboard" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" [routerLinkActiveOptions]="{exact: true}" (click)="closeOnMobile()" class="flex items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <mat-icon class="mr-4 text-[20px] text-slate-500 dark:text-slate-400">home</mat-icon>
               Início
             </a>
-            <a routerLink="/saved-lessons" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" (click)="closeOnMobile()" class="flex items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <a id="tour-saved" routerLink="/saved-lessons" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" (click)="closeOnMobile()" class="flex items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <mat-icon class="mr-4 text-[20px] text-slate-500 dark:text-slate-400">bookmark</mat-icon>
               Salvos
             </a>
           </div>
 
           <div class="mt-4 px-3">
-            <a routerLink="/my-courses" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" (click)="closeOnMobile()" class="flex justify-between items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+            <a id="tour-courses" routerLink="/my-courses" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" (click)="closeOnMobile()" class="flex justify-between items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
               <div class="flex items-center">
                 <mat-icon class="mr-4 text-[20px] text-slate-500 dark:text-slate-400">school</mat-icon>
                 Minhas Inscrições
               </div>
             </a>
           </div>
+
+          <!-- Pinned shortcuts items [Item 4] -->
+          @if (pinnedCourses().length > 0) {
+            <div class="mt-4 px-3 animate-fade-in">
+              <div class="px-4 py-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                <mat-icon class="text-[14px] w-[14px] h-[14px] text-amber-400">star</mat-icon> Atividades da Semana
+              </div>
+              <div class="space-y-1">
+                @for (course of pinnedCourses(); track course.id) {
+                  <a [routerLink]="['/course', course.id]" (click)="closeOnMobile()" class="flex items-center px-4 py-2.5 rounded-r-full text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group">
+                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 mr-3 shrink-0"></span>
+                    <span class="truncate">{{ course.title }}</span>
+                  </a>
+                }
+              </div>
+            </div>
+          }
 
           <div class="mt-4 border-t border-slate-200 dark:border-slate-800 pt-4 px-3 space-y-1">
             <a routerLink="/settings" routerLinkActive="bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-400" (click)="closeOnMobile()" class="flex items-center px-4 py-3 rounded-r-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
@@ -137,6 +158,7 @@ import { RealtimeChannel } from '@supabase/supabase-js';
                 <mat-icon>add</mat-icon>
               </a>
             }
+
             
             <!-- Apps Menu -->
             <button (click)="toggleAppsMenu()" class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors hidden sm:block" title="Google Apps">
@@ -173,7 +195,7 @@ import { RealtimeChannel } from '@supabase/supabase-js';
             }
 
             <div class="relative ml-2 z-50">
-              <a routerLink="/profile" class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-sm font-medium cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all border border-transparent overflow-hidden">
+              <a id="tour-profile" routerLink="/profile" class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-sm font-medium cursor-pointer hover:ring-2 hover:ring-indigo-300 transition-all border border-transparent overflow-hidden">
                 @if (appUser()?.avatar_url) {
                   <img [src]="appUser()?.avatar_url" alt="" class="w-full h-full object-cover">
                 } @else {
@@ -196,13 +218,20 @@ import { RealtimeChannel } from '@supabase/supabase-js';
     </div>
   `,
 })
-export class LayoutComponent implements OnInit, OnDestroy {
+export class LayoutComponent implements OnInit, OnDestroy, AfterViewInit {
   private supabase = inject(SupabaseService);
   private router = inject(Router);
   protected toastService = inject(ToastService);
   private searchService = inject(SearchService);
+  private tourService = inject(TourService);
+  private courseService = inject(CourseService);
+  private platformId = inject(PLATFORM_ID);
+  protected studyTools = inject(StudyToolsService);
 
   appUser = this.supabase.appUser;
+  pinnedCourses = signal<Course[]>([]);
+
+
 
   // Search state
   searchModel = '';
@@ -212,7 +241,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   private searchTimer: ReturnType<typeof setTimeout> | null = null;
   
   // Sidebar starts open on desktop (lg+), closed on mobile
-  isSidebarOpen = signal<boolean>(window.innerWidth >= 1024);
+  isSidebarOpen = signal<boolean>(false);
   isAppsMenuOpen = signal<boolean>(false);
 
   private realtimeChannel: RealtimeChannel | null = null;
@@ -221,12 +250,39 @@ export class LayoutComponent implements OnInit, OnDestroy {
   @HostListener('window:resize')
   onResize() {
     // Auto-adjust sidebar on window resize
-    if (window.innerWidth >= 1024) {
+    if (isPlatformBrowser(this.platformId) && window.innerWidth >= 1024) {
       this.isSidebarOpen.set(true);
     }
   }
 
-  ngOnInit() {
+  // Real-time listener for stars pinning/unpinning [Item 4]
+  @HostListener('window:sima_pinned_changed')
+  async onPinnedChanged() {
+    await this.loadPinnedCourses();
+  }
+
+  async loadPinnedCourses() {
+    if (!isPlatformBrowser(this.platformId)) return;
+    const raw = localStorage.getItem('sima_pinned_courses');
+    if (raw) {
+      const pinnedIds = new Set<string>(JSON.parse(raw));
+      try {
+        const allCourses = await this.courseService.getCourses();
+        this.pinnedCourses.set(allCourses.filter(c => pinnedIds.has(c.id)));
+      } catch (e) {
+        console.warn('Failed to load pinned courses details in layout:', e);
+      }
+    } else {
+      this.pinnedCourses.set([]);
+    }
+  }
+
+  async ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.isSidebarOpen.set(window.innerWidth >= 1024);
+    }
+    await this.loadPinnedCourses();
+
     // Only subscribe to real-time events if connected
     if (this.supabase.client.auth) {
       this.realtimeChannel = this.supabase.client
@@ -245,7 +301,19 @@ export class LayoutComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      const onboardingShown = localStorage.getItem('sima_onboarding_shown');
+      if (onboardingShown === 'true') {
+        this.tourService.start();
+      }
+    }
+  }
+
   ngOnDestroy() {
+    if (this.searchTimer) {
+      clearTimeout(this.searchTimer);
+    }
     // Fix memory leak: properly cleanup realtime channel
     if (this.realtimeChannel) {
       this.supabase.client.removeChannel(this.realtimeChannel);
@@ -280,9 +348,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     this.searchFocused.set(false);
   }
 
-  showNotification(msg: string) {
-    this.toastService.info(msg);
-  }
 
   toastClasses(type: string): string {
     const base = 'bg-white dark:bg-slate-800 border ';
@@ -324,7 +389,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   closeOnMobile() {
-    if (window.innerWidth < 1024) { // lg breakpoint
+    if (isPlatformBrowser(this.platformId) && window.innerWidth < 1024) { // lg breakpoint
       this.isSidebarOpen.set(false);
     }
   }

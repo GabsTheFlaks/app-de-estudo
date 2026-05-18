@@ -34,16 +34,6 @@ import { ThemeService } from '../../core/services/theme.service';
                   <div class="w-4 h-4 bg-white rounded-full"></div>
                 </div>
               </div>
-
-              <div class="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                <div>
-                  <div class="font-medium text-slate-800 dark:text-slate-200">Avisos da Plataforma</div>
-                  <div class="text-sm text-slate-500 dark:text-slate-400">Mudanças importantes e novidades do sistema.</div>
-                </div>
-                <div class="w-10 h-6 bg-slate-300 dark:bg-slate-600 rounded-full flex items-center justify-start px-1 shadow-inner">
-                  <div class="w-4 h-4 bg-white rounded-full"></div>
-                </div>
-              </div>
             </div>
           </div>
 

@@ -4,6 +4,8 @@
 .env*
 !.env.example
 src/env.ts
+src/env.js
+src/env.*
 
 # Compiled output
 /dist
@@ -46,3 +48,4 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+report.html
