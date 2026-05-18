@@ -51,7 +51,7 @@ flowchart TD
     UI -->|Busca imagens/documentos| R2
     UI -->|Dispara ações via Edge| Workers
     Workers -->|Garante segurança/URLs assinadas| R2
-    Supabase -->|Webhooks de Eventos (Insert/Update)| Make
+    Supabase -->|"Webhooks de Eventos (Insert/Update)"| Make
     Make -->|Integração com IA e Notificações| User
 ```
 
