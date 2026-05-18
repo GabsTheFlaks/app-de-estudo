@@ -71,6 +71,7 @@ create table public.courses (
   link_drive text not null,
   file_type text check (file_type in ('pdf', 'video', 'docs', 'pptx', 'xls')) not null,
   thumbnail_url text,
+  instructor_id uuid references public.users(id),
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -199,6 +200,63 @@ alter publication supabase_realtime add table public.comments;
 -- ALTER TABLE public.users ADD COLUMN IF NOT EXISTS avatar_url text;
 
 ```
+
+## 3. Criar Tabela de Planejamento Semanal (Planner)
+
+Para habilitar o cronograma semanal de planejamento sincronizado na nuvem, execute o código abaixo no SQL Editor do Supabase para criar a tabela e habilitar suas políticas de segurança (RLS):
+
+```sql
+-- Tabela de cronograma semanal sincronizado na nuvem
+CREATE TABLE IF NOT EXISTS public.student_planner (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid REFERENCES public.users(id) ON DELETE CASCADE NOT NULL,
+  week_day text NOT NULL CHECK (week_day IN ('seg', 'ter', 'qua', 'qui', 'sex', 'sab', 'dom')),
+  course_id uuid REFERENCES public.courses(id) ON DELETE CASCADE NOT NULL,
+  created_at timestamp WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  UNIQUE(user_id, week_day, course_id)
+);
+
+ALTER TABLE public.student_planner ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+    -- SELECT
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE tablename = 'student_planner' AND policyname = 'Permite estudantes ler seu cronograma'
+    ) THEN
+        CREATE POLICY "Permite estudantes ler seu cronograma"
+          ON public.student_planner
+          FOR SELECT
+          USING (auth.uid() = user_id);
+    END IF;
+
+    -- INSERT
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE tablename = 'student_planner' AND policyname = 'Permite estudantes inserir no cronograma'
+    ) THEN
+        CREATE POLICY "Permite estudantes inserir no cronograma"
+          ON public.student_planner
+          FOR INSERT
+          WITH CHECK (auth.uid() = user_id);
+    END IF;
+
+    -- DELETE
+    IF NOT EXISTS (
+        SELECT 1 FROM pg_policies
+        WHERE tablename = 'student_planner' AND policyname = 'Permite estudantes remover do cronograma'
+    ) THEN
+        CREATE POLICY "Permite estudantes remover do cronograma"
+          ON public.student_planner
+          FOR DELETE
+          USING (auth.uid() = user_id);
+    END IF;
+END
+$$;
+```
+
+
 
 ## 2. Configurar Variáveis de Ambiente locais
 Preencha no menu **Settings -> Secrets** (ou `angular.json` / ambiente local) as duas variáveis abaixo:

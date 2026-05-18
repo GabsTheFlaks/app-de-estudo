@@ -65,7 +65,7 @@ import { SafeResourceUrl } from '@angular/platform-browser';
                  <mat-icon class="text-4xl mb-2 text-slate-400">link_off</mat-icon>
                  <p class="text-sm">O link para este material não é suportado.</p>
                  @if (course()?.link_drive) {
-                   <a [href]="course()?.link_drive" target="_blank" rel="noopener noreferrer" class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors inline-block text-sm font-medium">
+                   <a [href]="embedService.getOriginalUrl(course()?.link_drive)" target="_blank" rel="noopener noreferrer" class="mt-4 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors inline-block text-sm font-medium">
                      Abrir Externamente
                    </a>
                  }

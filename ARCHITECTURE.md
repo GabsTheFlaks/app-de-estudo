@@ -6,54 +6,32 @@ O objetivo desta arquitetura é garantir **alta performance, escalabilidade, seg
 
 ---
 
-## 🗺️ Diagrama de Arquitetura
+## 🗺️ Visão Geral da Arquitetura
 
-O diagrama abaixo ilustra como as diferentes partes do sistema interagem:
+O sistema é dividido em camadas independentes que se comunicam através de APIs e Webhooks, garantindo um acoplamento fraco e alta coesão.
 
-```mermaid
-flowchart TD
-    %% Definição de Cores e Estilos
-    classDef frontend fill:#DD0031,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef backend fill:#3ECF8E,stroke:#fff,stroke-width:2px,color:#111;
-    classDef cloudflare fill:#F38020,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef automation fill:#6D00CC,stroke:#fff,stroke-width:2px,color:#fff;
-    classDef external fill:#f9f9f9,stroke:#333,stroke-width:2px,color:#333;
+| Camada | Tecnologia Principal | Responsabilidade |
+| :--- | :--- | :--- |
+| **Frontend** | Angular (v17+) | Interface do usuário, SSR, interações e consumo de dados |
+| **Edge / Hosting** | Cloudflare Pages / Workers | Hospedagem global, distribuição de conteúdo e regras de segurança na borda |
+| **Storage** | Cloudflare R2 | Armazenamento de arquivos pesados (PDFs, imagens) com custo zero de egress |
+| **BaaS (Backend)** | Supabase (PostgreSQL) | Banco de dados relacional, autenticação e políticas de segurança (RLS) |
+| **Automação** | Make (Webhooks) | Orquestração de processos, integração com IA e notificações |
 
-    %% Atores e Clientes
-    User((Usuário / Aluno)):::external
+---
 
-    %% Frontend
-    subgraph Frontend [Client-Side App]
-        UI[Angular 17+ App<br/>SSR, Signals, Standalone]:::frontend
-    end
+## 🔄 Fluxo de Dados
 
-    %% Edge / Hosting
-    subgraph Edge [Cloudflare Edge]
-        Hosting[Cloudflare Pages<br/>Hosting Global Rápido]:::cloudflare
-        Workers[Cloudflare Workers<br/>APIs Edge & Segurança]:::cloudflare
-        R2[Cloudflare R2<br/>Storage de Arquivos Pesados]:::cloudflare
-    end
-
-    %% Backend as a Service
-    subgraph BaaS [Backend & Database]
-        Supabase[Supabase<br/>PostgreSQL & Auth]:::backend
-    end
-
-    %% Automations
-    subgraph ProcessAutomations [Automações & Fluxos]
-        Make[Make / Webhooks<br/>Orquestração e IA]:::automation
-    end
-
-    %% Conexões
-    User -->|Acessa a plataforma| Hosting
-    Hosting --> UI
-    UI -->|Autenticação & Queries CRUD| Supabase
-    UI -->|Busca imagens/documentos| R2
-    UI -->|Dispara ações via Edge| Workers
-    Workers -->|Garante segurança/URLs assinadas| R2
-    Supabase -->|"Webhooks de Eventos (Insert/Update)"| Make
-    Make -->|Integração com IA e Notificações| User
-```
+1. **Acesso do Usuário:**
+   - O usuário (aluno ou administrador) acessa a plataforma servida via **Cloudflare Pages**. O Angular realiza a renderização inicial (SSR) para melhor SEO e velocidade.
+2. **Autenticação e Dados:**
+   - A aplicação se conecta diretamente ao **Supabase** para realizar autenticação de usuários e consultas CRUD (Create, Read, Update, Delete) no banco de dados PostgreSQL.
+3. **Mídia e Arquivos Sensíveis:**
+   - Quando a aplicação precisa exibir documentos ou imagens, ela faz a requisição para o **Cloudflare R2**.
+   - Para arquivos confidenciais, a aplicação dispara chamadas para os **Cloudflare Workers**, que garantem a segurança gerando URLs assinadas (Signed URLs) antes de devolver o arquivo do R2.
+4. **Automações (Webhooks):**
+   - Modificações no banco de dados (ex: inserção de um novo material) acionam triggers no Supabase, que enviam eventos (Webhooks) para o **Make**.
+   - O **Make** orquestra fluxos complexos, integra-se com modelos de IA (para sumarização ou análise) e envia notificações aos usuários, mantendo a regra de negócio complexa fora do frontend.
 
 ---
 

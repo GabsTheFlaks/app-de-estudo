@@ -91,10 +91,46 @@ export class EmbedUrlService {
   }
 
   /**
+   * Converte qualquer link do YouTube (embed, short, etc) de volta para o link original (watch?v=).
+   * Útil para o botão "Link Externo".
+   */
+  getOriginalUrl(url: string | null | undefined): string {
+    if (!url) return '';
+
+    try {
+      if (url.includes('youtube.com') || url.includes('youtu.be')) {
+        let videoId = '';
+
+        // Caso 1: youtu.be/ID
+        if (url.includes('youtu.be/')) {
+          videoId = url.split('youtu.be/')[1].split('?')[0];
+        }
+        // Caso 2: youtube.com/embed/ID
+        else if (url.includes('youtube.com/embed/')) {
+          videoId = url.split('youtube.com/embed/')[1].split('?')[0];
+        }
+        // Caso 3: youtube.com/watch?v=ID
+        else if (url.includes('v=')) {
+          const urlObj = new URL(url);
+          videoId = urlObj.searchParams.get('v') || '';
+        }
+
+        if (videoId) {
+          return `https://www.youtube.com/watch?v=${videoId}`;
+        }
+      }
+    } catch (e) {
+      console.warn('[EmbedUrlService] Erro ao normalizar URL original:', e);
+    }
+
+    return url || '';
+  }
+
+  /**
    * Extrai thumbnail de URLs do YouTube e Google Drive.
    */
-  getThumbnailUrl(url: string | null | undefined): string {
-    if (!url) return '';
+  getThumbnailUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
     try {
       if (url.includes('youtube.com') || url.includes('youtu.be')) {
         let videoId = '';
@@ -105,20 +141,11 @@ export class EmbedUrlService {
           videoId = urlObj.searchParams.get('v') || '';
         }
         if (videoId) return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-      } else if (url.includes('drive.google.com')) {
-        let driveId = '';
-        if (url.includes('/d/')) {
-          driveId = url.split('/d/')[1].split('/')[0];
-        } else {
-          const urlObj = new URL(url);
-          driveId = urlObj.searchParams.get('id') || '';
-        }
-        if (driveId) return `https://drive.google.com/thumbnail?id=${driveId}&sz=w240`;
       }
     } catch (e) {
       console.warn('[EmbedUrlService] URL thumbnail parse error', e);
     }
-    return '';
+    return null;
   }
 
   /**
