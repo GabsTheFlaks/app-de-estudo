@@ -29,7 +29,7 @@ O sistema é dividido em camadas independentes que se comunicam através de APIs
 3. **Mídia e Arquivos Sensíveis:**
    - Quando a aplicação precisa exibir documentos ou imagens, ela faz a requisição para o **Cloudflare R2**.
    - Para arquivos confidenciais, a aplicação dispara chamadas para os **Cloudflare Workers**, que garantem a segurança gerando URLs assinadas (Signed URLs) antes de devolver o arquivo do R2.
-4. **Automações (Webhooks):**
+4. **Automações (Webhooks):** (Em Implementação)
    - Modificações no banco de dados (ex: inserção de um novo material) acionam triggers no Supabase, que enviam eventos (Webhooks) para o **Make**.
    - O **Make** orquestra fluxos complexos, integra-se com modelos de IA (para sumarização ou análise) e envia notificações aos usuários, mantendo a regra de negócio complexa fora do frontend.
 
@@ -51,7 +51,7 @@ A escolha das tecnologias foi feita com base nos princípios de **eficiência de
 * **Cloudflare R2:** Escolhido estrategicamente para o armazenamento de arquivos (como PDFs e imagens de disciplinas). Diferente do AWS S3, o R2 possui **zero taxas de egress** (cobrança por transferência de dados de saída), o que é fundamental para manter os custos do projeto acadêmico baixos mesmo com alto volume de acessos.
 * **Cloudflare Workers:** Utilizado para rodar lógicas seguras na "borda" (edge), como a geração de URLs assinadas para proteger arquivos sensíveis armazenados no R2, garantindo que apenas usuários autenticados tenham acesso.
 
-### 4. Automação e Processos: Make (Integração & IA)
+### 4. Automação e Processos: Make (Integração & IA) (Em Implementação)
 * **Make:** Em vez de poluir o código do frontend com SDKs de inteligência artificial ou regras de negócio complexas de notificação, utilizamos o Make para orquestração de processos.
 * **Funcionamento:** O Supabase dispara Webhooks para o Make quando eventos ocorrem no banco de dados (ex: novo material inserido). O Make então processa essa informação, conecta-se a APIs de IA para sumarização ou categorização, e automatiza processos como disparo de e-mails ou atualizações no banco, mantendo o frontend leve.
 
